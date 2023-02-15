@@ -25,9 +25,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Checkout project sources
-        uses: actions/checkout@v2
-
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
 
@@ -35,7 +32,7 @@ jobs:
         run: ./gradlew test
 
   deploy-project:
-    needs: [ build-project, test-project ]
+    needs: [ build-project ]
     runs-on: ubuntu-latest
     defaults:
       run:
