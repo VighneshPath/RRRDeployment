@@ -34,13 +34,6 @@ jobs:
       - name: Run tests with Gradle Wrapper
         run: ./gradlew test
 
-  deploy-project:
-    needs: [ build-project ]
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./esop-trading
-    steps:
       - name: Checkout project sources
         uses: actions/checkout@v2
 
