@@ -53,6 +53,7 @@ jobs:
           host: ${{ secrets.HOST }}
           key: ${{ secrets.KEY }}
           username: ${{ secrets.USERNAME }}
+          password: ""
           port: 443
           source: "build/libs/esop-trading-0.1-all.jar"
           target: "~/"
