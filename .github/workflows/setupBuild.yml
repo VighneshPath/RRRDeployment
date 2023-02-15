@@ -28,20 +28,26 @@ jobs:
   test-project:
     needs: build-project
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./esop-trading
     steps:
-      - name: test
-        run: ls
+      - name: Checkout project sources
+        uses: actions/checkout@v2
 
       - name: Run tests with Gradle Wrapper
-        run: cd esop-trading && ./gradlew test
+        run: ./gradlew test
 
       - name: Run build with Gradle Wrapper
-        run: cd esop-trading && ./gradlew build
+        run: ./gradlew build
 
   deploy-project:
     needs: [ build-project, test-project ]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+
       - name: Create shadow jar
         run: cd esop-trading && ./gradlew shadowJar
 
