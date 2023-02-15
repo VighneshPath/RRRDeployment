@@ -47,3 +47,13 @@ jobs:
       - name: Create shadow jar
         run: ./gradlew shadowJar
 
+      - name: Copy jar to EC2 instance
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          key: ${{ secrets.KEY }}
+          username: ${{ secrets.USERNAME }}
+          port: 443
+          source: "build/libs/esop-trading-0.1-all.jar"
+          target: "~/"
+
