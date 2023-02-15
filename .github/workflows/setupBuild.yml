@@ -56,13 +56,11 @@ jobs:
           port: 22
           source: "build/libs/esop-trading-0.1-all.jar"
           target: "~/"
-
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME } }
           key: ${{ secrets.KEY }}
+          username: ${{ secrets.USERNAME }}
           port: 22
-          script: java -jar esop-trading-0.1-all.jar
-
+          script: whoami
