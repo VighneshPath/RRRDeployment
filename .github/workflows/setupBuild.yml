@@ -28,6 +28,9 @@ jobs:
   test-project:
     runs-on: ubuntu-latest
     steps:
+      - name: test
+        run: ls
+
       - name: Run tests with Gradle Wrapper
         run: cd esop-trading && ./gradlew test
 
