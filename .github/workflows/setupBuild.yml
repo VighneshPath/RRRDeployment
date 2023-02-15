@@ -2,42 +2,46 @@ name: Build Gradle project
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   build-project:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout project sources
-      uses: actions/checkout@v2
-      
-    - name: Validate gradle
-      uses: gradle/wrapper-validation-action@v1
+      - name: Checkout project sources
+        uses: actions/checkout@v2
 
-    - name: Setup JDK 17
-      uses: actions/setup-java@v2
-      with: 
-        java-version: '17'
-        distribution: 'temurin'
-    
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+      - name: Validate gradle
+        uses: gradle/wrapper-validation-action@v1
 
-  test-project: 
-    - name: Run tests with Gradle Wrapper
-      run: cd esop-trading && ./gradlew test
+      - name: Setup JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Run build with Gradle Wrapper
-      run: cd esop-trading && ./gradlew build
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
-    - needs: build-project
+  test-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests with Gradle Wrapper
+        run: cd esop-trading && ./gradlew test
+
+      - name: Run build with Gradle Wrapper
+        run: cd esop-trading && ./gradlew build
+
+      - needs: build-project
 
   deploy-project:
-    - name: Create shadow jar
-      run: cd esop-trading && ./gradlew shadowJar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create shadow jar
+        run: cd esop-trading && ./gradlew shadowJar
 
-    - name: Move and run shadow jar in ec2 instance
+      - name: Move and run shadow jar in ec2 instance
 
-    - needs: [build-project, test-project]
+      - needs: [ build-project, test-project ]
