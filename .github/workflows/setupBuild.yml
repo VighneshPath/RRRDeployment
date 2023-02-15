@@ -9,6 +9,9 @@ on:
 jobs:
   build-project:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./esop-trading
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v2
