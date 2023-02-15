@@ -33,11 +33,11 @@ jobs:
 
       - name: Run build with Gradle Wrapper
         run: cd esop-trading && ./gradlew build
-        needs: build-project
+    needs: build-project
 
   deploy-project:
     runs-on: ubuntu-latest
     steps:
       - name: Create shadow jar
         run: cd esop-trading && ./gradlew shadowJar
-        needs: [ build-project, test-project ]
+    needs: [ build-project, test-project ]
