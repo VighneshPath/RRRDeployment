@@ -54,7 +54,7 @@ jobs:
           key: ${{ secrets.KEY }}
           username: ${{ secrets.USERNAME }}
           password: ""
-          port: 443
+          port: 22
           source: "build/libs/esop-trading-0.1-all.jar"
           target: "~/"
 
