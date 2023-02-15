@@ -8,8 +8,8 @@ on:
 
 jobs:
   build-project:
-    runs-on: ubuntu-latest
     steps:
+      - runs-on: ubuntu-latest
       - name: Checkout project sources
         uses: actions/checkout@v2
 
@@ -26,8 +26,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
   test-project:
-    runs-on: ubuntu-latest
     steps:
+      - runs-on: ubuntu-latest
       - name: Run tests with Gradle Wrapper
         run: cd esop-trading && ./gradlew test
 
@@ -37,8 +37,8 @@ jobs:
       - needs: build-project
 
   deploy-project:
-    runs-on: ubuntu-latest
     steps:
+      - runs-on: ubuntu-latest
       - name: Create shadow jar
         run: cd esop-trading && ./gradlew shadowJar
 
