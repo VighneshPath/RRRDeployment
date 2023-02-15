@@ -32,8 +32,12 @@ jobs:
     - name: Run build with Gradle Wrapper
       run: cd esop-trading && ./gradlew build
 
+    - needs: build-project
+
   deploy-project:
     - name: Create shadow jar
       run: cd esop-trading && ./gradlew shadowJar
 
     - name: Move and run shadow jar in ec2 instance
+
+    - needs: [build-project, test-project]
