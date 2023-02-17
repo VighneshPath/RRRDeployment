@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Clone repo
         run: git clone https://github.com/VighneshPath/RRRDeployment.git
-      - name: Checkout
-        run: git fetch --depth 1 origin $GITHUB_REF
 
       - name: Validate gradle
         uses: gradle/wrapper-validation-action@v1
