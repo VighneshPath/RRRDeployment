@@ -62,10 +62,10 @@ jobs:
       - name: ls
         run: ls
       - name: Run scp to get the jar to instance
-        run: scp -o StrictHostKeyChecking=no -i file.pem  "./esop-trading/build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/
+        run: scp -o StrictHostKeyChecking=no -i file.pem  "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/
 
       - name: execute remote commands
         run: ssh -o StrictHostKeyChecking=no -i file.pem ${{ secrets.USERNAME }}@${{ secrets.HOST }} '
-          nohup java -jar ./esop-trading/build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
+          nohup java -jar ./build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
 
 
