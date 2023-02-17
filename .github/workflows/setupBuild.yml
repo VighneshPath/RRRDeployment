@@ -59,7 +59,8 @@ jobs:
       - name: Setup pem file
         run: echo '${{ secrets.KEY }}' > file.pem
           | chmod 400 file.pem
-
+      - name: ls
+        run: ls
       - name: Run scp to get the jar to instance
         run: scp -o StrictHostKeyChecking=no -i file.pem  "./esop-trading/build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/
 
