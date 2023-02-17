@@ -14,6 +14,8 @@ jobs:
         working-directory: ./esop-trading
     steps:
       - name: Clone repo
+        run: git clone https://github.com/VighneshPath/RRRDeployment.git
+      - name: Checkout
         run: git fetch --depth 1 origin $GITHUB_REF
 
       - name: Validate gradle
