@@ -13,8 +13,8 @@ jobs:
       run:
         working-directory: ./esop-trading
     steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v2
+      - name: Clone repo
+        uses: git fetch --depth 1 origin $GITHUB_REF
 
       - name: Validate gradle
         uses: gradle/wrapper-validation-action@v1
