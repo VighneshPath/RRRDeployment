@@ -14,7 +14,7 @@ jobs:
         working-directory: ./esop-trading
     steps:
       - name: Clone repo
-        uses: git fetch --depth 1 origin $GITHUB_REF
+        run: git fetch --depth 1 origin $GITHUB_REF
 
       - name: Validate gradle
         uses: gradle/wrapper-validation-action@v1
