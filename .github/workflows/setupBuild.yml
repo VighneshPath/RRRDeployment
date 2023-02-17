@@ -56,8 +56,11 @@ jobs:
       - name: Create shadow jar
         run: ./gradlew shadowJar
 
-      - name: Run scp to get the jar to the instance
-        run: scp -i ${{ secrets.KEY }} "./esop-trading/build/libs/esop-trading-0.1-all.jar" ${{ secrets.HOST }}:./
+      - name: Setup pem file
+        run: ${{ secrets.KEY }} > file.pem
+
+      - name: Run scp to get the jar to instance
+        run: scp -i file.pem  "./esop-trading/build/libs/esop-trading-0.1-all.jar" ec2-user@ec2-3-111-170-110.ap-south-1.compute.amazonaws.com:~/
 
       - name: Copy jar to EC2 instance
         uses: appleboy/scp-action@master
