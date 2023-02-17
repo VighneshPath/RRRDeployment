@@ -57,7 +57,8 @@ jobs:
         run: ./gradlew shadowJar
 
       - name: Setup pem file
-        run: ${{ secrets.KEY }} > file.pem
+        run: echo '${{ secrets.KEY }}' > file.pem
+          | chmod 400 file.pem
 
       - name: Run scp to get the jar to instance
         run: scp -i file.pem  "./esop-trading/build/libs/esop-trading-0.1-all.jar" ec2-user@ec2-3-111-170-110.ap-south-1.compute.amazonaws.com:~/
