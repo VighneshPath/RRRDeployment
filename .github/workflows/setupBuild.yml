@@ -61,17 +61,10 @@ jobs:
           | chmod 400 file.pem
 
       - name: Run scp to get the jar to instance
-        run: scp -i file.pem  "./esop-trading/build/libs/esop-trading-0.1-all.jar" ec2-user@ec2-3-111-170-110.ap-south-1.compute.amazonaws.com:~/
+        run: scp -i file.pem  "./esop-trading/build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/
 
-      - name: Copy jar to EC2 instance
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          key: ${{ secrets.KEY }}
-          username: ${{ secrets.USERNAME }}
-          port: 22
-          source: "./esop-trading/build/libs/esop-trading-0.1-all.jar"
-          target: "~/"
+      - name: execute remote commands
+        run: ssh -i file.pem ${{ secrets.USERNAME }}@${{ secrets.HOST }}
 
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
