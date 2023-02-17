@@ -9,6 +9,9 @@ on:
 jobs:
   test-project:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./esop-trading
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v3
@@ -32,6 +35,7 @@ jobs:
         run: ./gradlew test
 
   build-project:
+    needs: test-project
     runs-on: ubuntu-latest
     defaults:
       run:
