@@ -109,7 +109,7 @@ jobs:
 
       - name: Terraform IP Output 
         id: get-ip
-        run: terraform output | awk '{print $3}' | sed 's/"//g' >> $GITHUB_OUTPUT
+        run: terraform output | awk '{print $3}' | sed 's/"//g'
 
   build-project:
     needs: terraform
