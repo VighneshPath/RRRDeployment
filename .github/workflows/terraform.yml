@@ -38,7 +38,7 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-22.04
     outputs:
-      output1: ${{ steps.get-ip.outputs.stdout }}
+      output1: ${{ steps.get-ip.outputs.t }}
     permissions:
       pull-requests: write
     env:
@@ -118,7 +118,7 @@ jobs:
         run: echo ${{ steps.plan.outputs.stdout }}
       
       - name: Check log
-        run: echo ${{ steps.get-ip.outputs.* }}
+        run: echo ${{ steps.get-ip.outputs.t }}
 
   build-project:
     needs: terraform
