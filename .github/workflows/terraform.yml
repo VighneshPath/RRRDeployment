@@ -37,6 +37,8 @@ jobs:
     needs: test-project
     name: 'Terraform'
     runs-on: ubuntu-22.04
+    outputs:
+      output1: ${{ steps.get-ip.outputs.stdout }}
     permissions:
       pull-requests: write
     env:
@@ -140,8 +142,8 @@ jobs:
       - name: ls
         run: ls
       - name: Run scp to get the jar to instance
-        run: scp -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ steps.get-ip.outputs.stdout }}:~/
+        run: scp -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }}:~/
 
       - name: execute remote commands
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ steps.get-ip.outputs.stdout }} '
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }} '
           nohup java -jar ./build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
