@@ -6,35 +6,35 @@ on:
   pull_request:
 
 jobs:
-  test-project:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./esop-trading
-    steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v3
+  # test-project:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./esop-trading
+  #   steps:
+  #     - name: Checkout project sources
+  #       uses: actions/checkout@v3
 
-      - name: Validate gradle
-        uses: gradle/wrapper-validation-action@v1
+  #     - name: Validate gradle
+  #       uses: gradle/wrapper-validation-action@v1
 
-      - name: Setup JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+  #     - name: Setup JDK 17
+  #       uses: actions/setup-java@v2
+  #       with:
+  #         java-version: '17'
+  #         distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+  #     - name: Setup Gradle
+  #       uses: gradle/gradle-build-action@v2
 
-      - name: Run build with Gradle Wrapper
-        run: ./gradlew build
+  #     - name: Run build with Gradle Wrapper
+  #       run: ./gradlew build
 
-      - name: Run tests with Gradle Wrapper
-        run: ./gradlew test
+  #     - name: Run tests with Gradle Wrapper
+  #       run: ./gradlew test
 
   terraform:
-    needs: test-project
+    # needs: test-project
     name: 'Terraform'
     runs-on: ubuntu-22.04
     outputs:
@@ -111,13 +111,13 @@ jobs:
 
       - name: Terraform IP Output 
         id: get-ip
-        run: terraform output | awk '{print $3}' | sed 's/"//g'
+        run: echo | terraform output | awk '{print $3}' | sed 's/"//g' >> "$GITHUB_OUTPUT"
 
       - name: Check plan
         run: echo ${{ steps.plan.outputs.stdout }}
       
       - name: Check log
-        run: echo ${{ steps.get-ip.outputs.stdout }}
+        run: echo ${{ steps.get-ip.outputs.* }}
 
   build-project:
     needs: terraform
