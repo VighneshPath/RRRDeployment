@@ -112,7 +112,7 @@ jobs:
       - name: Terraform IP Output 
         id: get-ip
         run: t=$(terraform output | awk '{print $3}' | sed 's/"//g')
-          | echo "t=$t" >> "$GITHUB_OUTPUT"
+          | echo "t=$t" >> $GITHUB_OUTPUT
 
       - name: Check plan
         run: echo ${{ steps.plan.outputs.stdout }}
@@ -142,15 +142,15 @@ jobs:
       - name: Create shadow jar
         run: ./gradlew shadowJar
 
-      # - name: Setup pem file
-      #   run: echo '${{ secrets.KEY }}' > file.pem
-      #     | chmod 400 file.pem
+      - name: Setup pem file
+        run: echo '${{ secrets.KEY }}' > file.pem
+          | chmod 400 file.pem
           
       - name: ls
         run: ls
       - name: Run scp to get the jar to instance
-        run: scp -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }}:~/
+        run: scp -o StrictHostKeyChecking=no -i file.pem "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }}:~/
 
       - name: execute remote commands
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }} '
+        run: ssh -o StrictHostKeyChecking=no -i file.pem ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }} '
           nohup java -jar ./build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
