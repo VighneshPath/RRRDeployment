@@ -15,20 +15,21 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-west-2"
+  region = "us-west-2"
 }
 
 resource "aws_instance" "app_server" {
   ami           = "ami-830c94e3"
   instance_type = "t2.micro"
+  key_name      = "vighnesh-terraform"
 
   tags = {
-    Name = "ExampleAppServerInstance"
+    Name = "gurukul-vighnesh-esop"
   }
 }
-  
+
 
 output "instance_ip_addr" {
   value       = aws_instance.app_server.private_ip
   description = "The private IP address of the main server instance."
-}	
+} 

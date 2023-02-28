@@ -6,11 +6,44 @@ on:
   pull_request:
 
 jobs:
+  # test-project:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./esop-trading
+  #   steps:
+  #     - name: Checkout project sources
+  #       uses: actions/checkout@v3
+
+  #     - name: Validate gradle
+  #       uses: gradle/wrapper-validation-action@v1
+
+  #     - name: Setup JDK 17
+  #       uses: actions/setup-java@v2
+  #       with:
+  #         java-version: '17'
+  #         distribution: 'temurin'
+
+  #     - name: Setup Gradle
+  #       uses: gradle/gradle-build-action@v2
+
+  #     - name: Run build with Gradle Wrapper
+  #       run: ./gradlew build
+
+  #     - name: Run tests with Gradle Wrapper
+  #       run: ./gradlew test
+
   terraform:
+    # needs: test-project
     name: 'Terraform'
     runs-on: ubuntu-22.04
+    outputs:
+      output1: ${{ steps.get-ip.outputs.t }}
     permissions:
       pull-requests: write
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,7 +53,6 @@ jobs:
       #   with:
       #     # terraform_version: 0.13.0
       #     cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
@@ -78,12 +110,20 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
       - name: Terraform IP Output 
+        if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
         id: get-ip
-        run: terraform output | awk '{print $3}' | sed 's/"//g' >> $GITHUB_OUTPUT
+        run: echo "t=$(terraform output instance_ip_addr)" >> $GITHUB_OUTPUT
+
+      - name: Check plan
+        run: echo ${{ steps.plan.outputs.stdout }}
+      
+      - name: Check log
+        run: echo ${{ steps.get-ip.outputs.t }}
 
   build-project:
     needs: terraform
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
     defaults:
       run:
         working-directory: ./esop-trading
@@ -103,15 +143,15 @@ jobs:
       - name: Create shadow jar
         run: ./gradlew shadowJar
 
-      # - name: Setup pem file
-      #   run: echo '${{ secrets.KEY }}' > file.pem
-      #     | chmod 400 file.pem
+      - name: Setup pem file
+        run: echo '${{ secrets.KEY }}' > file.pem
+          | chmod 400 file.pem
           
       - name: ls
         run: ls
       - name: Run scp to get the jar to instance
-        run: scp -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ steps.get-ip.outputs.stdout }}:~/
+        run: scp -o StrictHostKeyChecking=no -i file.pem "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }}:~/
 
       - name: execute remote commands
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ steps.get-ip.outputs.stdout }} '
+        run: ssh -o StrictHostKeyChecking=no -i file.pem ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }} '
           nohup java -jar ./build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
