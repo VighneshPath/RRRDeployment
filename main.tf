@@ -21,7 +21,7 @@ provider "aws" {
 resource "aws_instance" "app_server" {
   ami           = "ami-830c94e3"
   instance_type = "t2.micro"
-  key_name = "vighnesh-terraform"
+  key_name      = "vighnesh-terraform"
 
   tags = {
     Name = "gurukul-vighnesh-esop"
