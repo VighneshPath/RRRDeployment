@@ -15,7 +15,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-west-2"
+  region = "us-west-2"
 }
 
 resource "aws_instance" "app_server" {
@@ -26,9 +26,9 @@ resource "aws_instance" "app_server" {
     Name = "ExampleAppServerInstance"
   }
 }
-  
+
 
 output "instance_ip_addr" {
   value       = aws_instance.app_server.private_ip
   description = "The private IP address of the main server instance."
-}	
+} 
