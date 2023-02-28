@@ -112,9 +112,12 @@ jobs:
       - name: Terraform IP Output 
         id: get-ip
         run: terraform output | awk '{print $3}' | sed 's/"//g'
+
+      - name: Check plan
+        run: echo ${{ steps.plan.outputs.stdout }}
       
       - name: Check log
-        run: echo "${{ steps.get-ip.outputs.stdout }}"
+        run: echo ${{ steps.get-ip.outputs.stdout }}
 
   build-project:
     needs: terraform
