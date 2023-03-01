@@ -1,0 +1,2 @@
+variable "private_key" {
+}

@@ -27,6 +27,19 @@ resource "aws_instance" "app_server" {
   tags = {
     Name = "gurukul-vighnesh-esop"
   }
+
+  connection {
+    type     = "ssh"
+    user     = "ec2-user"
+    private_key = var.private_key
+    host     = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo hello >> temp.txt"
+    ]
+  }
 }
 
 resource "aws_security_group" "main" {
