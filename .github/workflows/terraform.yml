@@ -63,11 +63,11 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false -var="private_key=${{ secrets.KEY }}"
+        run: echo "t=$(terraform plan -no-color -input=false -var="private_key=${{ secrets.KEY }}")" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Test op
-        run: echo ${{steps.plan.outputs.*}}
+        run: echo ${{steps.plan.outputs.t}}
 
       - name: Update Pull Request
         uses: actions/github-script@v6
