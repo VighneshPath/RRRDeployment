@@ -149,10 +149,10 @@ jobs:
       - name: ls
         run: ls
       - name: Run scp to get the jar to instance
-        run: scp -v -i file.pem -o StrictHostKeyChecking=no PublicAcceptedKeyTypes=ssh-rsa "./build/libs/esop-trading-0.1-all.jar" ubuntu@${{ needs.terraform.outputs.output1 }}:~/
+        run: scp -v -i file.pem -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ubuntu@${{ needs.terraform.outputs.output1 }}:~/
 
       - name: execute remote commands
-        run: ssh -v -i file.pem -o StrictHostKeyChecking=no PublicAcceptedKeyTypes=ssh-rsa ubuntu@${{ needs.terraform.outputs.output1 }} '
+        run: ssh -v -i file.pem -o StrictHostKeyChecking=no ubuntu@${{ needs.terraform.outputs.output1 }} '
           sudo apt-get update | 
           sudo apt-get install -y java-17-amazon-corretto-jdk | 
           export MICRONAUT_SERVER_PORT=80 |
