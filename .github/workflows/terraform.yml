@@ -144,8 +144,7 @@ jobs:
         run: ./gradlew shadowJar
 
       - name: Setup pem file
-        run: echo '${{ secrets.KEY }}' > file.pem
-          | chmod 400 file.pem
+        run: echo '${{ secrets.KEY }}' > file.pem | chmod 400 file.pem
           
       - name: ls
         run: ls
