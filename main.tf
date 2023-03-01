@@ -75,8 +75,8 @@ resource "aws_security_group" "main" {
 resource "aws_key_pair" "deployer" {
   key_name   = "vighnesh-terraform"
   public_key = var.public_key
-  tags ={
-    "name"="Public Key"
+  tags = {
+    "name" = "Public Key"
   }
 }
 output "instance_ip_addr" {
