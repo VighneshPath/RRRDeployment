@@ -1,0 +1,162 @@
+name: Terraform
+
+on:
+  push:
+    branches: [terra]
+  pull_request:
+
+jobs:
+  test-project:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./esop-trading
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+
+      - name: Validate gradle
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build
+
+      - name: Run tests with Gradle Wrapper
+        run: ./gradlew test
+
+  terraform:
+    needs: test-project
+    name: 'Terraform'
+    runs-on: ubuntu-22.04
+    outputs:
+      output1: ${{ steps.get-ip.outputs.instance_ip }}
+    permissions:
+      pull-requests: write
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -input=false -var="public_key={{ secrets.PUBLIC }}"
+        continue-on-error: true
+
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
+
+      - name: Terraform IP Output 
+        if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
+        id: get-ip
+        run: echo "instance_ip=$(terraform output instance_ip_addr | tr -d '"')" >> $GITHUB_OUTPUT
+
+      - name: Check log
+        run: echo ${{ steps.get-ip.outputs.instance_ip }}
+
+  deploy-project:
+    needs: terraform
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: ./esop-trading
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Create shadow jar
+        run: ./gradlew shadowJar
+
+      - name: Setup pem file
+        run: echo '${{ secrets.KEY }}' > file.pem
+
+      - name: Modify permissions
+        run: chmod 400 file.pem
+
+      - name: copy file via ssh key
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ needs.terraform.outputs.output1 }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          source: "esop-trading/build/libs/esop-trading-0.1-all.jar,start.sh"
+          target: "~/"
+
+      - name: run app
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ needs.terraform.outputs.output1 }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            /bin/bash start.sh
