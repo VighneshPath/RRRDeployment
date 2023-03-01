@@ -168,7 +168,7 @@ jobs:
       - name: run app
         uses: appleboy/ssh-action@v0.1.8
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ needs.terraform.outputs.output1 }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: 22
