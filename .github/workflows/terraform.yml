@@ -144,15 +144,14 @@ jobs:
         run: ./gradlew shadowJar
 
       - name: Setup pem file
-        run: echo '${{ secrets.KEY }}' > file.pem | chmod 400 file.pem
-          
-      - name: ls
-        run: ls
-      - name: test
-        run: ls -al ~/.ssh
-      
-      - name: test2
-        run: ls -al ~/
+        run: echo '${{ secrets.temp }}' > file.pem
+
+      - name: Modify permissions
+        run: chmod 400 file.pem
+
+      - name: cat
+        run: cat file.pem
+
       - name: Run scp to get the jar to instance
         run: scp -v -i file.pem -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ubuntu@${{ needs.terraform.outputs.output1 }}:~/
 
