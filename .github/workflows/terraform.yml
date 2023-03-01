@@ -160,7 +160,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.output1 }}
           username: ec2-user
-          port: ${{ secrets.PORT }}
+          port: 22
           key: ${{ secrets.KEY }}
           source: "esop-trading/build/libs/esop-trading-0.1-all.jar"
           target: "~/"
@@ -171,7 +171,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
+          port: 22
           script: |
             sudo apt-get update
             sudo apt-get install -y java-17-amazon-corretto-jdk
