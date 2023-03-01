@@ -107,7 +107,7 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false -var="public_key={{ secrets.PUBLIC }}"
+        run: terraform apply -auto-approve -input=false -var="public_key=${{ secrets.PUBLIC }}"
 
       - name: Terraform IP Output 
         if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
