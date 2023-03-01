@@ -148,8 +148,13 @@ jobs:
           
       - name: ls
         run: ls
+      - name: test
+        run: ls -al ~/.ssh
+      
+      - name: test2
+        run: ls -al ~/
       - name: Run scp to get the jar to instance
-        run: chmod og-rw ~ && scp -v -i file.pem -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ubuntu@${{ needs.terraform.outputs.output1 }}:~/
+        run: scp -v -i file.pem -o StrictHostKeyChecking=no "./build/libs/esop-trading-0.1-all.jar" ubuntu@${{ needs.terraform.outputs.output1 }}:~/
 
       - name: execute remote commands
         run: ssh -v -i file.pem -o StrictHostKeyChecking=no ubuntu@${{ needs.terraform.outputs.output1 }} '
