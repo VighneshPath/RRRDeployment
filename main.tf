@@ -21,7 +21,7 @@ provider "aws" {
 resource "aws_instance" "app_server" {
   ami                    = "ami-0b029b1931b347543"
   instance_type          = "t2.micro"
-  key_name               = aws_key_pair.deployer.key_name
+  key_name               = "vighnesh-terraform"
   vpc_security_group_ids = [aws_security_group.main.id]
 
   tags = {
@@ -72,13 +72,6 @@ resource "aws_security_group" "main" {
   }
 }
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "vighnesh-terraform"
-  public_key = var.public_key
-  tags = {
-    "name" = "Public Key"
-  }
-}
 output "instance_ip_addr" {
   value       = aws_instance.app_server.public_ip
   description = "The public IP address of the main server instance."
