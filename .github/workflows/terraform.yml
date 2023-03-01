@@ -68,7 +68,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        run: terraform plan -no-color -input=false -var="public_key={{ secrets.PUBLIC }}"
         continue-on-error: true
 
       - name: Update Pull Request
