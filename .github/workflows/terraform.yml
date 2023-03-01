@@ -149,6 +149,12 @@ jobs:
       - name: Modify permissions
         run: chmod 400 file.pem
 
+      - name: test
+        run: ls
+      
+      - name: ls inside
+        run: ls ./build/libs
+
       - name: copy file via ssh key
         uses: appleboy/scp-action@v0.1.3
         with:
