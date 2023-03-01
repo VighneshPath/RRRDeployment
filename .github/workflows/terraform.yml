@@ -70,9 +70,6 @@ jobs:
           echo "$plan_output" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Test op
-        run: echo ${{steps.plan.outputs.plan_output}}
-
       - name: Update Pull Request
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
