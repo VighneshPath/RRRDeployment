@@ -135,12 +135,6 @@ jobs:
       - name: Create shadow jar
         run: ./gradlew shadowJar
 
-      - name: Setup pem file
-        run: echo '${{ secrets.KEY }}' > file.pem
-
-      - name: Modify permissions
-        run: chmod 400 file.pem
-
       - name: copy file via ssh key
         uses: appleboy/scp-action@v0.1.3
         with:
