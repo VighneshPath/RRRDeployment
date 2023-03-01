@@ -112,7 +112,7 @@ jobs:
       - name: Terraform IP Output 
         if: github.ref == 'refs/heads/terra' && github.event_name == 'push'
         id: get-ip
-        run: echo "t=$(terraform output instance_ip_addr)" >> $GITHUB_OUTPUT
+        run: echo "t=$(terraform output instance_ip_addr | tr -d '"')" >> $GITHUB_OUTPUT
 
       - name: Check plan
         run: echo ${{ steps.plan.outputs.stdout }}
@@ -150,8 +150,8 @@ jobs:
       - name: ls
         run: ls
       - name: Run scp to get the jar to instance
-        run: scp -o StrictHostKeyChecking=no -i file.pem "./build/libs/esop-trading-0.1-all.jar" ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }}:~/
+        run: scp -o StrictHostKeyChecking=no -i file.pem "./build/libs/esop-trading-0.1-all.jar" ubuntu@${{ needs.terraform.outputs.output1 }}:~/
 
       - name: execute remote commands
-        run: ssh -o StrictHostKeyChecking=no -i file.pem ${{ secrets.USERNAME }}@${{ needs.terraform.outputs.output1 }} '
-          nohup java -jar ./build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
+        run: ssh -o StrictHostKeyChecking=no -i file.pem ubuntu@${{ needs.terraform.outputs.output1 }} '
+          sudo apt-get update| sudo apt-get install -y java-17-amazon-corretto-jdk | nohup java -jar ./build/libs/esop-trading-0.1-all.jar > /dev/null 2>&1&'
