@@ -159,7 +159,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ needs.terraform.outputs.output1 }}
-          username: ubuntu
+          username: ec2-user
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
           source: "esop-trading/build/libs/esop-trading-0.1-all.jar"
