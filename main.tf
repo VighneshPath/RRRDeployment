@@ -79,7 +79,7 @@ resource "aws_security_group" "main" {
 }
 
 resource "aws_instance" "app_server" {
-  ami                    = "ami-0b029b1931b347543"
+  ami                    = "ami-07bc04fdc13241142"
   instance_type          = "t2.micro"
   key_name               = "gurukul-vighnesh"
   subnet_id              = aws_subnet.subnet.id
