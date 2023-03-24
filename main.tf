@@ -20,7 +20,7 @@ provider "aws" {
 
 resource "aws_subnet" "subnet" {
   vpc_id                  = "vpc-019c09a1a0c5b4f6b"
-  cidr_block              = "10.0.0.0/24"
+  cidr_block              = "10.0.0.96/28"
   map_public_ip_on_launch = "true"
 
   tags = {
