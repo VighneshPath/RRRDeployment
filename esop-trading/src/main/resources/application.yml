@@ -1,4 +1,13 @@
 micronaut:
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+        all:
+          allowedMethods:
+            - OPTIONS
+            - POST
   application:
     name: esopTrading
 netty:
