@@ -18,17 +18,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/24"
-  id         = "vpc-019c09a1a0c5b4f6b"
-
-  tags = {
-    Name = "Gurukul VPC"
-  }
-}
-
 resource "aws_subnet" "subnet" {
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = "vpc-019c09a1a0c5b4f6b"
   cidr_block              = "10.0.0.0/24"
   map_public_ip_on_launch = "true"
 
