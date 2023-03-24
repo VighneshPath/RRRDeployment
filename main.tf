@@ -28,12 +28,12 @@ resource "aws_subnet" "subnet" {
   }
 }
 
-resource "aws_internet_gateway" "gw" {
-  vpc_id = "vpc-019c09a1a0c5b4f6b"
-  tags = {
-    Name = "Custom Gateway"
-  }
-}
+# resource "aws_internet_gateway" "gw" {
+#   vpc_id = "vpc-019c09a1a0c5b4f6b"
+#   tags = {
+#     Name = "Custom Gateway"
+#   }
+# }
 
 resource "aws_security_group" "main" {
   egress = [
