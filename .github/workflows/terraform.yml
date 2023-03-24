@@ -7,7 +7,6 @@ on:
 
 jobs:
   terraform:
-    needs: test-project
     name: 'Terraform'
     runs-on: ubuntu-22.04
     outputs:
