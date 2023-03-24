@@ -36,6 +36,7 @@ resource "aws_subnet" "subnet" {
 # }
 
 resource "aws_security_group" "main" {
+  vpc_id = "vpc-019c09a1a0c5b4f6b"
   egress = [
     {
       cidr_blocks      = ["0.0.0.0/0", ]
