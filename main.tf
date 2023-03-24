@@ -18,18 +18,18 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_vpc" "main"{
+resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/24"
-  id = "vpc-019c09a1a0c5b4f6b"
+  id         = "vpc-019c09a1a0c5b4f6b"
 
   tags = {
     Name = "Gurukul VPC"
   }
 }
 
-resource "aws_subnet" "subnet"{
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.0.0/24"
+resource "aws_subnet" "subnet" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.0.0/24"
   map_public_ip_on_launch = "true"
 
   tags = {
@@ -44,9 +44,9 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-resource "aws_default_route_table" "route_table"{
+resource "aws_default_route_table" "route_table" {
   default_route_table_id = aws_vpc.main.default_route_table_id
-  route{
+  route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.gw.id
   }
@@ -102,7 +102,7 @@ resource "aws_instance" "app_server" {
   ami                    = "ami-0b029b1931b347543"
   instance_type          = "t2.micro"
   key_name               = "gurukul-vighnesh"
-  subnet_id = aws_subnet.subnet.id
+  subnet_id              = aws_subnet.subnet.id
   vpc_security_group_ids = [aws_security_group.main.id]
 
   tags = {
